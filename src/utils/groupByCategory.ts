@@ -1,5 +1,12 @@
-import type { Resource, Category } from '../types';
+import type { Resource } from '../types';
 
-export function groupByCategory(resources: Resource[]): Record<Category, Resource[]> {
-  return {} as Record<Category, Resource[]>;
-}
+export const groupByCategory = (resources: Resource[]): Record<string, Resource[]> => {
+  return resources.reduce((acc, resource) => {
+    const { category } = resource;
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(resource);
+    return acc;
+  }, {} as Record<string, Resource[]>);
+};
