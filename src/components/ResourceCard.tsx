@@ -3,9 +3,10 @@ import type { Resource } from '../types';
 interface ResourceCardProps {
   resource: Resource;
   onClick: (resource: Resource) => void;
+  onTagClick?: (tag: string) => void;
 }
 
-export const ResourceCard = ({ resource, onClick }: ResourceCardProps) => {
+export const ResourceCard = ({ resource, onClick, onTagClick }: ResourceCardProps) => {
   const { title, thumbnail, tags, duration, category } = resource;
 
   return (
@@ -30,10 +31,16 @@ export const ResourceCard = ({ resource, onClick }: ResourceCardProps) => {
         <h3 style={{ margin: '0.5rem 0', fontSize: '1rem', color: '#1a1a1a' }}>{title}</h3>
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
           {tags.slice(0, 3).map((tag) => (
-            <span key={tag} data-testid="tag" style={{
-              fontSize: '0.75rem', background: '#f0f0f0',
-              padding: '2px 8px', borderRadius: '999px', color: '#555'
-            }}>
+            <span
+              key={tag}
+              data-testid="tag"
+              onClick={e => { e.stopPropagation(); onTagClick?.(tag!); }}
+              style={{
+                fontSize: '0.75rem', background: '#f0f0f0',
+                padding: '2px 8px', borderRadius: '999px', color: '#555',
+                cursor: onTagClick ? 'pointer' : 'default'
+              }}
+            >
               #{tag}
             </span>
           ))}
