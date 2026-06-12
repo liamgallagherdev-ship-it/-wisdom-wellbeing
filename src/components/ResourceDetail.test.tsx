@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ResourceDetail } from './ResourceDetail';
-import { Resource } from '../types';
+import type { Resource } from '../types';
 
 const mockResource: Resource = {
   id: '001',

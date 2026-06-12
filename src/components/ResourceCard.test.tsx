@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { ResourceCard } from './ResourceCard';
-import { Resource } from '../types';
+import type { Resource } from '../types';
 
 const mockResource: Resource = {
   id: '001',
