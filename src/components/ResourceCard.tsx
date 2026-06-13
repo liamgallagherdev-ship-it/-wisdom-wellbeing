@@ -11,8 +11,14 @@ export const ResourceCard = ({ resource, onClick, onTagClick }: ResourceCardProp
   const { title, thumbnail, tags, duration, category } = resource;
 
   return (
-    <div className={styles.card} onClick={() => onClick(resource)}>
-      <img src={thumbnail} alt={title} className={styles.thumbnail} />
+    <div
+      className={styles.card}
+      onClick={() => onClick(resource)}
+      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(resource); } }}
+      role="button"
+      tabIndex={0}
+    >
+      <img src={thumbnail} alt="" className={styles.thumbnail} />
       <div className={styles.body}>
         <span className={styles.category}>{category}</span>
         <h3 className={styles.title}>{title}</h3>
@@ -23,6 +29,7 @@ export const ResourceCard = ({ resource, onClick, onTagClick }: ResourceCardProp
               data-testid="tag"
               className={styles.tag}
               onClick={e => { e.stopPropagation(); onTagClick(tag!); }}
+              aria-label={`Filter by tag: ${tag}`}
             >
               #{tag}
             </button>
