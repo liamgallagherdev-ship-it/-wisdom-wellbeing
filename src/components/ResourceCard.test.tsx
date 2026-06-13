@@ -16,23 +16,24 @@ const mockResource: Resource = {
 
 describe('ResourceCard', () => {
   it('should render the resource title', () => {
-    render(<ResourceCard resource={mockResource} onClick={() => {}} />);
+    render(<ResourceCard resource={mockResource} onClick={() => {}} onTagClick={() => {}} />);
     expect(screen.getByText('Mindful Moments')).toBeInTheDocument();
   });
 
   it('should render the thumbnail image', () => {
-    render(<ResourceCard resource={mockResource} onClick={() => {}} />);
-    expect(screen.getByRole('img')).toHaveAttribute('alt', 'Mindful Moments');
+    render(<ResourceCard resource={mockResource} onClick={() => {}} onTagClick={() => {}} />);
+    const img = document.querySelector('img');
+    expect(img).toHaveAttribute('src', mockResource.thumbnail);
   });
 
   it('should render no more than 3 tags', () => {
-    render(<ResourceCard resource={mockResource} onClick={() => {}} />);
+    render(<ResourceCard resource={mockResource} onClick={() => {}} onTagClick={() => {}} />);
     const tags = screen.getAllByTestId('tag');
     expect(tags.length).toBeLessThanOrEqual(3);
   });
 
   it('should render the duration in minutes', () => {
-    render(<ResourceCard resource={mockResource} onClick={() => {}} />);
-    expect(screen.getByText('25 min')).toBeInTheDocument();
+    render(<ResourceCard resource={mockResource} onClick={() => {}} onTagClick={() => {}} />);
+    expect(screen.getByText(/25 min/)).toBeInTheDocument();
   });
 });

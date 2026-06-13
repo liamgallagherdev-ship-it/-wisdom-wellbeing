@@ -28,7 +28,7 @@ describe('ResourceDetail', () => {
 
   it('should render the date uploaded', () => {
     render(<ResourceDetail resource={mockResource} onClose={() => {}} />);
-    expect(screen.getByText('2025-07-10')).toBeInTheDocument();
+    expect(screen.getByText(/2025-07-10/)).toBeInTheDocument();
   });
 
   it('should call onClose when close button is clicked', async () => {

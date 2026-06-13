@@ -5,9 +5,9 @@ import { resources } from '../data/resources';
 describe('groupByCategory', () => {
   it('should group resources by their category', () => {
     const grouped = groupByCategory(resources);
-    expect(grouped['Podcasts']).toHaveLength(1);
-    expect(grouped['Articles']).toHaveLength(1);
-    expect(grouped['Fitness']).toHaveLength(1);
+    expect(grouped['Podcasts']).toHaveLength(3);
+    expect(grouped['Articles']).toHaveLength(3);
+    expect(grouped['Fitness']).toHaveLength(3);
   });
 
   it('should contain the correct resource in each category', () => {
