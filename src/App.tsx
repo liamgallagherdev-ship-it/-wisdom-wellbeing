@@ -1,41 +1,25 @@
-import { useState } from 'react';
 import { ResourceCard } from './components/ResourceCard';
 import { ResourceDetail } from './components/ResourceDetail';
-import { resources } from './data/resources';
-import { groupByCategory } from './utils/groupByCategory';
-import type { Resource, FilterState, SortOption } from './types';
+import { useResources } from './hooks/useResources';
 
 function App() {
-  const [selected, setSelected] = useState<Resource | null>(null);
-  const [filter, setFilter] = useState<FilterState>({ search: '', activeTag: null });
-  const [sortBy, setSortBy] = useState<SortOption>('category');
+  const {
+    filter, sortBy, setSortBy,
+    selected, setSelected,
+    grouped, byDate,
+    setSearch, setActiveTag, clearTag,
+    filtered,
+  } = useResources();
 
-  const filtered = resources.filter(({ title, tags }) => {
-    const q = filter.search.toLowerCase();
-    const matchesSearch = !q || title.toLowerCase().includes(q) || tags.some(t => t?.toLowerCase().includes(q));
-    const matchesTag = !filter.activeTag || tags.includes(filter.activeTag);
-    return matchesSearch && matchesTag;
-  });
-
-  const byDate = [...filtered].sort((a, b) => b.date_uploaded.localeCompare(a.date_uploaded));
-  const grouped = groupByCategory(filtered);
+  const grid: React.CSSProperties = {
+    display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem'
+  };
 
   const btnStyle = (active: boolean): React.CSSProperties => ({
     padding: '0.4rem 1rem', borderRadius: '999px', border: '1px solid #2c7a7b',
     fontSize: '0.85rem', cursor: 'pointer', fontWeight: 500,
     background: active ? '#2c7a7b' : 'white',
     color: active ? 'white' : '#2c7a7b',
-  });
-
-  const grid: React.CSSProperties = {
-    display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem'
-  };
-
-  const cardProps = (resource: Resource) => ({
-    key: resource.id,
-    resource,
-    onClick: setSelected,
-    onTagClick: (tag: string) => setFilter(f => ({ ...f, activeTag: tag, search: '' })),
   });
 
   return (
@@ -47,7 +31,7 @@ function App() {
           type="search"
           placeholder="Search by title or tag..."
           value={filter.search}
-          onChange={e => setFilter(f => ({ ...f, search: e.target.value, activeTag: null }))}
+          onChange={e => setSearch(e.target.value)}
           style={{
             padding: '0.5rem 1rem', borderRadius: '999px', border: '1px solid #ddd',
             fontSize: '0.95rem', width: '280px', outline: 'none'
@@ -65,7 +49,7 @@ function App() {
           <span style={{ fontSize: '0.85rem', color: '#2c7a7b' }}>
             Filtering by: <strong>#{filter.activeTag}</strong>
             <button
-              onClick={() => setFilter(f => ({ ...f, activeTag: null }))}
+              onClick={clearTag}
               style={{ marginLeft: '6px', border: 'none', background: 'none', cursor: 'pointer', color: '#888' }}
             >
               ✕
@@ -84,15 +68,29 @@ function App() {
                 {category}
               </h2>
               <div style={grid}>
-                {items.map(r => <ResourceCard {...cardProps(r)} />)}
+                {items.map(r => (
+                  <ResourceCard
+                    key={r.id}
+                    resource={r}
+                    onClick={setSelected}
+                    onTagClick={setActiveTag}
+                  />
+                ))}
               </div>
             </div>
           ))
         : (
-            <div style={grid}>
-              {byDate.map(r => <ResourceCard {...cardProps(r)} />)}
-            </div>
-          )
+          <div style={grid}>
+            {byDate.map(r => (
+              <ResourceCard
+                key={r.id}
+                resource={r}
+                onClick={setSelected}
+                onTagClick={setActiveTag}
+              />
+            ))}
+          </div>
+        )
       }
 
       {selected && (
