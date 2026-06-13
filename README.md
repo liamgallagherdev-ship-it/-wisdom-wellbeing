@@ -88,17 +88,14 @@ This project follows Test-Driven Development (TDD). Tests are written before imp
 
 ## Development Approach
 
-All architectural decisions were made by me. I understood every line of code written, caught issues the AI missed (such as the accidental test pass in the empty array test), and debugged all failing tests independently — including fixing broken tests after accessibility changes affected the DOM structure.
-
-This project was built using a combination of AI tools as pair programming assistants — specifically Claude (via claude.ai and the VS Code extension) and ChatGPT. Rather than relying on a single AI tool, I deliberately used both in parallel, which allowed me to:
+The full solution including all three bonus features was completed in approximately 2.5 hours, using a combination of AI tools as pair programming assistants — specifically Claude (via the VS Code extension) and ChatGPT. Rather than relying on a single AI tool, I deliberately used both in parallel, which allowed me to:
 
 - Cross-reference suggestions and spot discrepancies quickly
 - Ask better, more targeted questions based on different responses
 - Catch errors faster by comparing approaches
+- Maintain a clear understanding of every decision made
 
-The AI tools guided a significant portion of the code and structure. My contribution was in directing the process, asking the right questions, understanding the output, spotting issues such as the accidental test pass in the empty array test, and making decisions about what to build and why.
-
-The full solution including all three bonus features was completed in approximately 2.5 hours.
+All architectural decisions were made by me. I understood every line of code written, caught issues the AI missed (such as the accidental test pass in the empty array test), and debugged all failing tests independently — including fixing broken tests after accessibility changes affected the DOM structure.
 
 ## What I'd Add With More Time
 
