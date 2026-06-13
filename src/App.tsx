@@ -1,3 +1,4 @@
+import styles from './App.module.css';
 import { ResourceCard } from './components/ResourceCard';
 import { ResourceDetail } from './components/ResourceDetail';
 import { useResources } from './hooks/useResources';
@@ -11,103 +12,87 @@ function App() {
     filtered,
   } = useResources();
 
-  const grid: React.CSSProperties = {
-    display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem'
-  };
-
-  const btnStyle = (active: boolean): React.CSSProperties => ({
-    padding: '0.4rem 1rem', borderRadius: '999px', border: '1px solid #2c7a7b',
-    fontSize: '0.85rem', cursor: 'pointer', fontWeight: 500,
-    background: active ? '#2c7a7b' : 'white',
-    color: active ? 'white' : '#2c7a7b',
-  });
-
   return (
-    <div style={{ padding: '2rem', fontFamily: 'sans-serif', maxWidth: '1200px', margin: '0 auto' }}>
-      <h1 style={{ color: '#2c7a7b', marginBottom: '1rem' }}>Wisdom Wellbeing</h1>
-
-      <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap' }}>
-        <input
-          type="search"
-          placeholder="Search by title or tag..."
-          value={filter.search}
-          onChange={e => setSearch(e.target.value)}
-          style={{
-            padding: '0.5rem 1rem', borderRadius: '999px', border: '1px solid #ddd',
-            fontSize: '0.95rem', width: '280px', outline: 'none'
-          }}
-        />
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <button style={btnStyle(sortBy === 'category')} onClick={() => setSortBy('category')}>
-            By Category
-          </button>
-          <button style={btnStyle(sortBy === 'date')} onClick={() => setSortBy('date')}>
-            By Date
-          </button>
+    <div className={styles.app}>
+      <div className={styles.inner}>
+        <div className={styles.header}>
+          <h1 className={styles.logo}>
+            Wisdom <span>Wellbeing</span>
+          </h1>
+          <p className={styles.tagline}>Resources to support your mind and body</p>
         </div>
-        {filter.activeTag && (
-          <span style={{ fontSize: '0.85rem', color: '#2c7a7b' }}>
-            Filtering by: <strong>#{filter.activeTag}</strong>
+
+        <div className={styles.toolbar}>
+          <input
+            type="search"
+            placeholder="Search by title or tag..."
+            value={filter.search}
+            onChange={e => setSearch(e.target.value)}
+            className={styles.search}
+          />
+          <div className={styles.sortGroup}>
             <button
-              onClick={clearTag}
-              style={{ marginLeft: '6px', border: 'none', background: 'none', cursor: 'pointer', color: '#888' }}
+              className={`${styles.sortBtn} ${sortBy === 'category' ? styles.sortBtnActive : ''}`}
+              onClick={() => setSortBy('category')}
             >
-              ✕
+              By Category
             </button>
-          </span>
-        )}
-        {filtered.length === 0 && (
-          <span style={{ color: '#888', fontSize: '0.9rem' }}>No results found.</span>
+            <button
+              className={`${styles.sortBtn} ${sortBy === 'date' ? styles.sortBtnActive : ''}`}
+              onClick={() => setSortBy('date')}
+            >
+              By Date
+            </button>
+          </div>
+          {filter.activeTag && (
+            <span className={styles.activeTag}>
+              Filtering by: <strong>#{filter.activeTag}</strong>
+              <button className={styles.clearTag} onClick={clearTag}>✕</button>
+            </span>
+          )}
+          {filtered.length === 0 && (
+            <span className={styles.noResults}>No results found — try a different search.</span>
+          )}
+        </div>
+
+        {sortBy === 'category'
+          ? Object.entries(grouped).map(([category, items]) => (
+              <div key={category} className={styles.categorySection}>
+                <h2 className={styles.categoryHeading}>{category}</h2>
+                <div className={styles.grid}>
+                  {items.map(r => (
+                    <ResourceCard
+                      key={r.id}
+                      resource={r}
+                      onClick={setSelected}
+                      onTagClick={setActiveTag}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))
+          : (
+            <div className={styles.grid}>
+              {byDate.map(r => (
+                <ResourceCard
+                  key={r.id}
+                  resource={r}
+                  onClick={setSelected}
+                  onTagClick={setActiveTag}
+                />
+              ))}
+            </div>
+          )
+        }
+
+        {selected && (
+          <div className={styles.overlay} onClick={() => setSelected(null)}>
+            <div className={styles.modal} onClick={e => e.stopPropagation()}>
+              <ResourceDetail resource={selected} onClose={() => setSelected(null)} />
+            </div>
+          </div>
         )}
       </div>
-
-      {sortBy === 'category'
-        ? Object.entries(grouped).map(([category, items]) => (
-            <div key={category} style={{ marginBottom: '3rem' }}>
-              <h2 style={{ color: '#2c7a7b', marginBottom: '1rem', fontSize: '1.25rem', fontWeight: 600 }}>
-                {category}
-              </h2>
-              <div style={grid}>
-                {items.map(r => (
-                  <ResourceCard
-                    key={r.id}
-                    resource={r}
-                    onClick={setSelected}
-                    onTagClick={setActiveTag}
-                  />
-                ))}
-              </div>
-            </div>
-          ))
-        : (
-          <div style={grid}>
-            {byDate.map(r => (
-              <ResourceCard
-                key={r.id}
-                resource={r}
-                onClick={setSelected}
-                onTagClick={setActiveTag}
-              />
-            ))}
-          </div>
-        )
-      }
-
-      {selected && (
-        <div style={{
-          position: 'fixed', inset: 0,
-          background: 'rgba(0,0,0,0.6)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          zIndex: 100
-        }}>
-          <div style={{
-            background: 'white', padding: '2rem', borderRadius: '12px',
-            maxWidth: '600px', width: '90%', boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
-          }}>
-            <ResourceDetail resource={selected} onClose={() => setSelected(null)} />
-          </div>
-        </div>
-      )}
     </div>
   );
 }
